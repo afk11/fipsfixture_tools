@@ -49,13 +49,13 @@ foreach ($lines as &$line) {
             $cause = null;
             $c = substr($v, 3, 1);
             if ($c == "1") {
-                $cause = SpecBasedCurveTest::CAUSE_MSG;
+                $cause = "msg";
             } else if ($c == "2") {
-                $cause = SpecBasedCurveTest::CAUSE_R;
+                $cause = "r";
             } else if ($c == "3") {
-                $cause = SpecBasedCurveTest::CAUSE_S;
+                $cause = "s";
             } else if ($c == "4") {
-                $cause = SpecBasedCurveTest::CAUSE_Q;
+                $cause = "Q";
             }
             $line = $n. ($shouldPass ? "true" : "false") . "\n   cause: $cause";
         }

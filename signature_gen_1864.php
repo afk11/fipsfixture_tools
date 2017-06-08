@@ -9,12 +9,13 @@ $lenN = strlen($n);
 function parseCurveAndAlgo(string $section) {
     $section = str_replace("[", "", $section);
     $section = str_replace("]", "", $section);
-
+    $algo = strtolower(str_replace("-", "", substr($section, 6, 7)));
     return [
         'nist-p' . substr($section, -3),
-        'sha1'
+        $algo,
     ];
 }
+
 
 $algo = null;
 $curve = null;
@@ -30,6 +31,11 @@ foreach ($lines as &$line) {
         $line = $n . gmp_strval(gmp_init($v, 16), 10);
         //echo $v.PHP_EOL;
     }
+
+    if (strpos($line, "Msg = ") === 0) {
+        $line = str_replace("Msg = ", "Algo = {$algo}\nMsg = ", $line);
+    }
+
     $start = substr($line, 0, 2);
     if ($start === "Qx" || $start === "Qy") {
         $line = "";
@@ -39,8 +45,9 @@ foreach ($lines as &$line) {
 $lines = array_filter($lines, 'strlen');
 
 $output = implode("\n", $lines);
-$output = str_replace("Msg = ", " -\n   algo: sha1\n   msg_full: ", $output);
+$output = str_replace("Msg = ", "   msg_full: ", $output);
 $output = str_replace("d = ", "   private: ", $output);
+$output = str_replace("Algo = ", " -\n   algo: ", $output);
 $output = str_replace("k = ", "   k: ", $output);
 $output = str_replace("R = ", "   r: ", $output);
 $output = str_replace("S = ", "   s: ", $output);
